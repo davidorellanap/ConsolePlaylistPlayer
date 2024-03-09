@@ -1,0 +1,3 @@
+C:/Users/DavidOrellana/CLionProjects/ConsolePlaylistPlayer/cmake-build-debug/CMakeFiles/ConsolePlaylistPlayer.dir
+C:/Users/DavidOrellana/CLionProjects/ConsolePlaylistPlayer/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/DavidOrellana/CLionProjects/ConsolePlaylistPlayer/cmake-build-debug/CMakeFiles/rebuild_cache.dir
