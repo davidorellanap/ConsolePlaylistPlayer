@@ -1,33 +1,48 @@
-//
-// Created by DavidOrellana on 09/03/24.
-//
+/*
+ * UNIVERSIDAD FRANCISCO GAVIDIA
+ * ESTRUCTURA DE DATOS
+ * CICLO I 2024 | UNIDAD 2
+ *
+ * PROYECTO: SISTEMA DE REPRODUCCIÓN DE MÚSICA
+ * INTEGRANTES:
+ *              DAVID ORELLANA | OP100417
+ *              GABRIEL MURCIA | MS100922
+ *              ATILIO MORATAYA | MS101122
+ *              ANDREA CHAMUL |
+ */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <stdio.h>   // Librería para manejo de entrada y salida
+#include <stdlib.h>  // Librería para manejo de memoria dinámica
+#include <string.h>  // Librería para manejo de cadenas de texto
 
+// Declaración de la estructura que representa canción
 typedef struct Song {
     char name[50];
 } Song;
 
+// Declaración de la estructura que representa un nodo de canción
 typedef struct SongNode {
     Song song;
     struct SongNode* prev;
     struct SongNode* next;
 } SongNode;
 
+// Declaración de la estructura que representa una lista de reproducción
 typedef struct Playlist {
     char name[50];
     SongNode* head;
 } Playlist;
 
+// Declaración de la estructura que representa un nodo de lista de reproducción
 typedef struct PlaylistNode {
     Playlist playlist;
     struct PlaylistNode* next;
 } PlaylistNode;
 
+// Función que crea un nodo de canción
 PlaylistNode* playlistHead = NULL;
 
+// Función que crea un nodo de canción
 SongNode* createSongNode(char* name) {
     SongNode* newSongNode = (SongNode*)malloc(sizeof(SongNode));
     strcpy(newSongNode->song.name, name);
@@ -36,6 +51,7 @@ SongNode* createSongNode(char* name) {
     return newSongNode;
 }
 
+// Función que crea un nodo de lista de reproducción
 PlaylistNode* createPlaylistNode(char* name) {
     PlaylistNode* newPlaylistNode = (PlaylistNode*)malloc(sizeof(PlaylistNode));
     strcpy(newPlaylistNode->playlist.name, name);
@@ -44,6 +60,7 @@ PlaylistNode* createPlaylistNode(char* name) {
     return newPlaylistNode;
 }
 
+// Función que agrega una canción a una lista de reproducción
 void addSongToPlaylist(Playlist* playlist, char* name) {
     SongNode* newSongNode = createSongNode(name);
     if (playlist->head == NULL) {
@@ -58,6 +75,7 @@ void addSongToPlaylist(Playlist* playlist, char* name) {
     }
 }
 
+// Función que remueve una canción de una lista de reproducción
 void removeSongFromPlaylist(Playlist* playlist, char* name) {
     SongNode* temp = playlist->head;
     while (temp != NULL) {
@@ -78,12 +96,14 @@ void removeSongFromPlaylist(Playlist* playlist, char* name) {
     }
 }
 
+// Función que crea una lista de reproducción
 void createPlaylist(char* name) {
     PlaylistNode* newPlaylistNode = createPlaylistNode(name);
     newPlaylistNode->next = playlistHead;
     playlistHead = newPlaylistNode;
 }
 
+// Función que elimina una lista de reproducción
 void deletePlaylist(char* name) {
     PlaylistNode* temp = playlistHead;
     PlaylistNode* prev = NULL;
@@ -103,6 +123,7 @@ void deletePlaylist(char* name) {
     }
 }
 
+// Función que busca una lista de reproducción
 Playlist* findPlaylist(char* name) {
     PlaylistNode* temp = playlistHead;
     while (temp != NULL) {
@@ -114,6 +135,7 @@ Playlist* findPlaylist(char* name) {
     return NULL;
 }
 
+// Función que imprime una lista de reproducción
 void printPlaylist(Playlist* playlist) {
     printf("Playlist: %s\n", playlist->name);
     SongNode* temp = playlist->head;
@@ -123,6 +145,7 @@ void printPlaylist(Playlist* playlist) {
     }
 }
 
+// Función que reproduce una lista de reproducción
 void playPlaylist(Playlist* playlist) {
     SongNode* temp = playlist->head;
     while (temp != NULL) {
@@ -138,6 +161,7 @@ void playPlaylist(Playlist* playlist) {
     }
 }
 
+// Función principal
 int main() {
     while (1) {
         printf("1. Create playlist\n");
