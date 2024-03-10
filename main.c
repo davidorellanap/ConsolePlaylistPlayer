@@ -8,7 +8,8 @@
  *              DAVID ORELLANA | OP100417
  *              GABRIEL MURCIA | MS100922
  *              ATILIO MORATAYA | MS101122
- *              ANDREA CHAMUL |
+ *              ANDREA CHAMUL | DC100223
+ *              ALEJANDRA ARRIOLA | AG100521
  */
 
 #include <stdio.h>   // Librería para manejo de entrada y salida
