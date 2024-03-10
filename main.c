@@ -1,230 +1,229 @@
-/*
- * UNIVERSIDAD FRANCISCO GAVIDIA
- * ESTRUCTURA DE DATOS
- * CICLO I 2024 | UNIDAD 2
- *
- * PROYECTO: SISTEMA DE REPRODUCCIÓN DE MÚSICA
- * INTEGRANTES:
- *              DAVID ORELLANA | OP100417
- *              GABRIEL MURCIA | MS100922
- *              ATILIO MORATAYA | MS101122
- *              ANDREA CHAMUL | DC100223
- *              ALEJANDRA ARRIOLA | AG100521
- */
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include <stdio.h>   // Librería para manejo de entrada y salida
-#include <stdlib.h>  // Librería para manejo de memoria dinámica
-#include <string.h>  // Librería para manejo de cadenas de texto
-
-// Declaración de la estructura que representa canción
+// Estructura para representar una canción
 typedef struct Song {
-    char name[50];
+    char name[100];
+    struct Song *next;
+    struct Song *prev;
 } Song;
 
-// Declaración de la estructura que representa un nodo de canción
-typedef struct SongNode {
-    Song song;
-    struct SongNode* prev;
-    struct SongNode* next;
-} SongNode;
-
-// Declaración de la estructura que representa una lista de reproducción
+// Estructura para representar una playlist
 typedef struct Playlist {
-    char name[50];
-    SongNode* head;
+    char name[100];
+    Song *head;
+    Song *tail;
+    struct Playlist *next;
 } Playlist;
 
-// Declaración de la estructura que representa un nodo de lista de reproducción
-typedef struct PlaylistNode {
-    Playlist playlist;
-    struct PlaylistNode* next;
-} PlaylistNode;
-
-// Función que crea un nodo de canción
-PlaylistNode* playlistHead = NULL;
-
-// Función que crea un nodo de canción
-SongNode* createSongNode(char* name) {
-    SongNode* newSongNode = (SongNode*)malloc(sizeof(SongNode));
-    strcpy(newSongNode->song.name, name);
-    newSongNode->prev = NULL;
-    newSongNode->next = NULL;
-    return newSongNode;
+// Función para mostrar el menú principal
+void showMainMenu() {
+    printf("\n--- Menu Principal ---\n");
+    printf("1. Crear Playlist\n");
+    printf("2. Reproducir Playlist\n");
+    printf("3. Mostrar Todas las Playlist\n");
+    printf("4. Eliminar Playlist\n");
+    printf("5. Terminar Instancia\n");
+    printf("----------------------\n");
 }
 
-// Función que crea un nodo de lista de reproducción
-PlaylistNode* createPlaylistNode(char* name) {
-    PlaylistNode* newPlaylistNode = (PlaylistNode*)malloc(sizeof(PlaylistNode));
-    strcpy(newPlaylistNode->playlist.name, name);
-    newPlaylistNode->playlist.head = NULL;
-    newPlaylistNode->next = NULL;
-    return newPlaylistNode;
+// Función para mostrar el menú de reproducción
+void showPlaybackMenu() {
+    printf("\n--- Reproduccion ---\n");
+    printf("1. Siguiente Cancion\n");
+    printf("2. Cancion Anterior\n");
+    printf("3. Volver al Menu Principal\n");
+    printf("---------------------\n");
 }
 
-// Función que agrega una canción a una lista de reproducción
-void addSongToPlaylist(Playlist* playlist, char* name) {
-    SongNode* newSongNode = createSongNode(name);
+// Función para crear una nueva canción
+Song* createSong(const char *name) {
+    Song *newSong = (Song*)malloc(sizeof(Song));
+    strcpy(newSong->name, name);
+    newSong->next = NULL;
+    newSong->prev = NULL;
+    return newSong;
+}
+
+// Función para crear una nueva playlist
+Playlist* createPlaylist(const char *name) {
+    Playlist *newPlaylist = (Playlist*)malloc(sizeof(Playlist));
+    strcpy(newPlaylist->name, name);
+    newPlaylist->head = NULL;
+    newPlaylist->tail = NULL;
+    newPlaylist->next = NULL;
+    return newPlaylist;
+}
+
+// Función para añadir una canción a una playlist
+void addSongToPlaylist(Playlist *playlist, const char *songName) {
+    Song *newSong = createSong(songName);
+
     if (playlist->head == NULL) {
-        playlist->head = newSongNode;
+        playlist->head = newSong;
+        playlist->tail = newSong;
     } else {
-        SongNode* last = playlist->head;
-        while (last->next != NULL) {
-            last = last->next;
-        }
-        last->next = newSongNode;
-        newSongNode->prev = last;
+        newSong->prev = playlist->tail;
+        playlist->tail->next = newSong;
+        playlist->tail = newSong;
     }
 }
 
-// Función que remueve una canción de una lista de reproducción
-void removeSongFromPlaylist(Playlist* playlist, char* name) {
-    SongNode* temp = playlist->head;
-    while (temp != NULL) {
-        if (strcmp(temp->song.name, name) == 0) {
-            if (temp->prev != NULL) {
-                temp->prev->next = temp->next;
-            }
-            if (temp->next != NULL) {
-                temp->next->prev = temp->prev;
-            }
-            if (temp == playlist->head) {
-                playlist->head = temp->next;
-            }
-            free(temp);
-            return;
-        }
-        temp = temp->next;
+// Función para mostrar todas las playlists
+void showAllPlaylists(Playlist *head) {
+    printf("\n--- Todas las Playlists ---\n");
+    Playlist *current = head;
+
+    while (current != NULL) {
+        printf("%s\n", current->name);
+        current = current->next;
     }
+    printf("---------------------------\n");
 }
 
-// Función que crea una lista de reproducción
-void createPlaylist(char* name) {
-    PlaylistNode* newPlaylistNode = createPlaylistNode(name);
-    newPlaylistNode->next = playlistHead;
-    playlistHead = newPlaylistNode;
-}
+// Función para eliminar una playlist
+void deletePlaylist(Playlist **head, const char *name) {
+    Playlist *current = *head;
+    Playlist *prev = NULL;
 
-// Función que elimina una lista de reproducción
-void deletePlaylist(char* name) {
-    PlaylistNode* temp = playlistHead;
-    PlaylistNode* prev = NULL;
-    while (temp != NULL) {
-        if (strcmp(temp->playlist.name, name) == 0) {
-            if (prev != NULL) {
-                prev->next = temp->next;
-            }
-            if (temp == playlistHead) {
-                playlistHead = temp->next;
-            }
-            free(temp);
-            return;
-        }
-        prev = temp;
-        temp = temp->next;
+    while (current != NULL && strcmp(current->name, name) != 0) {
+        prev = current;
+        current = current->next;
     }
-}
 
-// Función que busca una lista de reproducción
-Playlist* findPlaylist(char* name) {
-    PlaylistNode* temp = playlistHead;
-    while (temp != NULL) {
-        if (strcmp(temp->playlist.name, name) == 0) {
-            return &temp->playlist;
+    if (current != NULL) {
+        if (prev == NULL) {
+            *head = current->next;
+        } else {
+            prev->next = current->next;
         }
-        temp = temp->next;
-    }
-    return NULL;
-}
 
-// Función que imprime una lista de reproducción
-void printPlaylist(Playlist* playlist) {
-    printf("Playlist: %s\n", playlist->name);
-    SongNode* temp = playlist->head;
-    while (temp != NULL) {
-        printf("Song: %s\n", temp->song.name);
-        temp = temp->next;
-    }
-}
-
-// Función que reproduce una lista de reproducción
-void playPlaylist(Playlist* playlist) {
-    SongNode* temp = playlist->head;
-    while (temp != NULL) {
-        printf("Now playing: %s\n", temp->song.name);
-        printf("Press n for next song, p for previous song\n");
-        char ch;
-        scanf(" %c", &ch);
-        if (ch == 'n') {
-            temp = temp->next;
-        } else if (ch == 'p' && temp->prev != NULL) {
-            temp = temp->prev;
-        }
+        free(current);
+        printf("Playlist eliminada: %s\n", name);
+    } else {
+        printf("Playlist no encontrada: %s\n", name);
     }
 }
 
 // Función principal
 int main() {
+    Playlist *playlistHead = NULL;
+
     while (1) {
-        printf("1. Create playlist\n");
-        printf("2. Delete playlist\n");
-        printf("3. Add song to playlist\n");
-        printf("4. Remove song from playlist\n");
-        printf("5. Play playlist\n");
-        printf("6. Exit\n");
-        printf("Enter your choice: ");
+        showMainMenu();
         int choice;
+        printf("Ingrese su eleccion: ");
         scanf("%d", &choice);
-        char name[50];
+
         switch (choice) {
-            case 1:
-                printf("Enter playlist name: ");
-                scanf("%s", name);
-                createPlaylist(name);
+            case 1: {
+                // Crear Playlist
+                char playlistName[100];
+                printf("Ingrese el nombre de la Playlist: ");
+                scanf("%s", playlistName);
+
+                Playlist *newPlaylist = createPlaylist(playlistName);
+                char songName[100];
+                int addMoreSongs = 1;
+
+                while (addMoreSongs) {
+                    printf("Ingrese el nombre de la Cancion: ");
+                    scanf("%s", songName);
+                    addSongToPlaylist(newPlaylist, songName);
+
+                    printf("¿Desea agregar otra cancion? (1: Si, 0: No): ");
+                    scanf("%d", &addMoreSongs);
+                }
+
+                if (playlistHead == NULL) {
+                    playlistHead = newPlaylist;
+                } else {
+                    newPlaylist->next = playlistHead;
+                    playlistHead = newPlaylist;
+                }
+
+                printf("Playlist creada exitosamente: %s\n", playlistName);
                 break;
-            case 2:
-                printf("Enter playlist name: ");
-                scanf("%s", name);
-                deletePlaylist(name);
+            }
+
+            case 2: {
+                // Reproducir Playlist
+                showAllPlaylists(playlistHead);
+                char playlistName[100];
+                printf("Ingrese el nombre de la Playlist a reproducir: ");
+                scanf("%s", playlistName);
+
+                Playlist *currentPlaylist = playlistHead;
+                while (currentPlaylist != NULL && strcmp(currentPlaylist->name, playlistName) != 0) {
+                    currentPlaylist = currentPlaylist->next;
+                }
+
+                if (currentPlaylist != NULL) {
+                    Song *currentSong = currentPlaylist->head;
+
+                    while (currentSong != NULL) {
+                        printf("\nReproduciendo: %s\n", currentSong->name);
+                        showPlaybackMenu();
+
+                        int playbackChoice;
+                        printf("Ingrese su eleccion: ");
+                        scanf("%d", &playbackChoice);
+
+                        switch (playbackChoice) {
+                            case 1:
+                                // Siguiente Canción
+                                if (currentSong->next != NULL) {
+                                    currentSong = currentSong->next;
+                                } else {
+                                    printf("¡Ultima cancion en la Playlist!\n");
+                                }
+                                break;
+                            case 2:
+                                // Canción Anterior
+                                if (currentSong->prev != NULL) {
+                                    currentSong = currentSong->prev;
+                                } else {
+                                    printf("¡Primera cancion en la Playlist!\n");
+                                }
+                                break;
+                            case 3:
+                                // Volver al Menú Principal
+                                currentSong = NULL; // Salir de la reproducción
+                                break;
+                            default:
+                                printf("Opcion invalida\n");
+                        }
+                    }
+                } else {
+                    printf("Playlist no encontrada: %s\n", playlistName);
+                }
                 break;
+            }
+
             case 3:
-                printf("Enter playlist name: ");
-                scanf("%s", name);
-                Playlist* playlist = findPlaylist(name);
-                if (playlist == NULL) {
-                    printf("Playlist not found\n");
-                } else {
-                    printf("Enter song name: ");
-                    scanf("%s", name);
-                    addSongToPlaylist(playlist, name);
-                }
+                // Mostrar Todas las Playlists
+                showAllPlaylists(playlistHead);
                 break;
-            case 4:
-                printf("Enter playlist name: ");
-                scanf("%s", name);
-                playlist = findPlaylist(name);
-                if (playlist == NULL) {
-                    printf("Playlist not found\n");
-                } else {
-                    printf("Enter song name: ");
-                    scanf("%s", name);
-                    removeSongFromPlaylist(playlist, name);
-                }
+
+            case 4: {
+                // Eliminar Playlist
+                showAllPlaylists(playlistHead);
+                char playlistName[100];
+                printf("Ingrese el nombre de la Playlist a eliminar: ");
+                scanf("%s", playlistName);
+                deletePlaylist(&playlistHead, playlistName);
                 break;
+            }
+
             case 5:
-                printf("Enter playlist name: ");
-                scanf("%s", name);
-                playlist = findPlaylist(name);
-                if (playlist == NULL) {
-                    printf("Playlist not found\n");
-                } else {
-                    playPlaylist(playlist);
-                }
-                break;
-            case 6:
-                exit(0);
+                // Terminar Instancia
+                return 0;
+
             default:
-                printf("Invalid choice\n");
+                printf("Opcion invalida\n");
         }
     }
+
     return 0;
 }
