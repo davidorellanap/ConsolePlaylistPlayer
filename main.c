@@ -1,3 +1,16 @@
+/*
+ *              UNIVERSIDAD FRANCISCO GAVIDIA
+ *              ESTRUCTURA DE DATOS - CICLO I 2024
+ *
+ *              PROYECTO UNIDAD 2: REPRODUCTOR DE PLAYLIST CON LISTAS DOBLEMENTE ENLAZADAS
+ *
+ *              ESTUDIANTES:
+ *                          DAVID ORELLANA - OP100417
+ *                          ANDREA DURAN - DC100223
+ *                          GABRIEL MURCIA - MS100922
+ *                          ATILIO MORATAYA - MS101122
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
