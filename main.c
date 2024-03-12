@@ -132,7 +132,7 @@ int main() {
                     scanf("%s", songName);
                     addSongToPlaylist(newPlaylist, songName);
 
-                    printf("¿Desea agregar otra cancion? (1: Si, 0: No): ");
+                    printf("Desea agregar otra cancion? (1: Si, 0: No): ");
                     scanf("%d", &addMoreSongs);
                 }
 
@@ -176,7 +176,7 @@ int main() {
                                 if (currentSong->next != NULL) {
                                     currentSong = currentSong->next;
                                 } else {
-                                    printf("¡Ultima cancion en la Playlist!\n");
+                                    printf("Ultima cancion en la Playlist!\n");
                                 }
                                 break;
                             case 2:
@@ -184,7 +184,7 @@ int main() {
                                 if (currentSong->prev != NULL) {
                                     currentSong = currentSong->prev;
                                 } else {
-                                    printf("¡Primera cancion en la Playlist!\n");
+                                    printf("Primera cancion en la Playlist!\n");
                                 }
                                 break;
                             case 3:
